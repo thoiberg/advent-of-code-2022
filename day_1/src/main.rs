@@ -20,10 +20,9 @@ fn part_one_solution(data: &Vec<Vec<u32>>) -> u32 {
 fn part_two_solution(data: &Vec<Vec<u32>>) -> u32 {
     let mut calorie_counts: Vec<u32> = data.into_iter().map(|elf| elf.into_iter().sum()).collect();
 
-    calorie_counts.sort();
-    calorie_counts.reverse();
+    calorie_counts.sort_by(|a, b| a.cmp(b).reverse());
 
-    calorie_counts[0] + calorie_counts[1] + calorie_counts[2]
+    calorie_counts[0..=2].into_iter().sum()
 }
 
 fn puzzle_data() -> Vec<Vec<u32>> {
