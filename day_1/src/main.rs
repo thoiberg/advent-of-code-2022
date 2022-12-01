@@ -77,4 +77,11 @@ mod test {
 
         assert_eq!(answer, 45000)
     }
+
+    #[test]
+    fn test_part_two_solution() {
+        let answer = part_two_solution(&puzzle_data());
+
+        assert_eq!(answer, 211189);
+    }
 }
