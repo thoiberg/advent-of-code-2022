@@ -4,6 +4,10 @@ fn main() {
     let part_one_answer = part_one_solution(&data);
 
     println!("Part One Solution is: {}", part_one_answer);
+
+    let part_two_answer = part_two_solution(&data);
+
+    println!("Part Two Solution is: {}", part_two_answer);
 }
 
 fn part_one_solution(data: &Vec<Vec<u32>>) -> u32 {
@@ -11,6 +15,15 @@ fn part_one_solution(data: &Vec<Vec<u32>>) -> u32 {
         .map(|elf| elf.into_iter().sum())
         .max()
         .unwrap()
+}
+
+fn part_two_solution(data: &Vec<Vec<u32>>) -> u32 {
+    let mut calorie_counts: Vec<u32> = data.into_iter().map(|elf| elf.into_iter().sum()).collect();
+
+    calorie_counts.sort();
+    calorie_counts.reverse();
+
+    calorie_counts[0] + calorie_counts[1] + calorie_counts[2]
 }
 
 fn puzzle_data() -> Vec<Vec<u32>> {
@@ -34,16 +47,19 @@ fn read_data() -> &'static str {
 mod test {
     use super::*;
 
-    #[test]
-    fn test_part_one_example() {
-        let data: Vec<Vec<u32>> = vec![
+    fn test_data() -> Vec<Vec<u32>> {
+        vec![
             vec![1000, 2000, 3000],
             vec![4000],
             vec![5000, 6000],
             vec![7000, 8000, 9000],
             vec![10000],
-        ];
-        let answer = part_one_solution(&data);
+        ]
+    }
+
+    #[test]
+    fn test_part_one_example() {
+        let answer = part_one_solution(&test_data());
 
         assert_eq!(answer, 24000)
     }
@@ -53,5 +69,12 @@ mod test {
         let answer = part_one_solution(&puzzle_data());
 
         assert_eq!(answer, 71471);
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let answer = part_two_solution(&test_data());
+
+        assert_eq!(answer, 45000)
     }
 }
