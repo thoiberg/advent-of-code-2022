@@ -7,9 +7,10 @@ fn main() {
 }
 
 fn part_one_solution(data: &Vec<Vec<u32>>) -> u32 {
-    let elf_calories: Vec<u32> = data.into_iter().map(|elf| elf.into_iter().sum()).collect();
-
-    elf_calories.into_iter().max().unwrap()
+    data.into_iter()
+        .map(|elf| elf.into_iter().sum())
+        .max()
+        .unwrap()
 }
 
 fn puzzle_data() -> Vec<Vec<u32>> {
