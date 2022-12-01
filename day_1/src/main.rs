@@ -7,18 +7,9 @@ fn main() {
 }
 
 fn part_one_solution(data: &Vec<Vec<u32>>) -> u32 {
-    let mut max = 0;
+    let elf_calories: Vec<u32> = data.into_iter().map(|elf| elf.into_iter().sum()).collect();
 
-    for elf in data {
-        let total_calories = elf.into_iter().sum();
-        max = if total_calories > max {
-            total_calories
-        } else {
-            max
-        }
-    }
-
-    max
+    elf_calories.into_iter().max().unwrap()
 }
 
 fn puzzle_data() -> Vec<Vec<u32>> {
