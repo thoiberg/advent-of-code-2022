@@ -8,12 +8,6 @@ fn main() {
     println!("Part One Solution is: {}", part_one_answer);
 }
 
-// process data
-// create class obj (Round)
-// takes your hand and opponents hand
-// play() method compares both and returns round score
-// iter through all Rounds and tally total score
-
 #[derive(Clone, Copy)]
 struct Round {
     player_hand: Hand,
