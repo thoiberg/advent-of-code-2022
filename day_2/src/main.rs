@@ -101,8 +101,15 @@ mod test_super {
 
     #[test]
     fn test_part_one_example() {
-        let answer = part_one_solution(test_data());
+        let answer = part_one_solution(&test_data());
 
         assert_eq!(answer, 15);
+    }
+
+    #[test]
+    fn test_part_one_solution() {
+        let answer = part_one_solution(&process_input(read_data()));
+
+        assert_eq!(answer, 17189)
     }
 }
