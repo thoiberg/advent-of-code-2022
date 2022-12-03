@@ -1,5 +1,3 @@
-use std::{cmp::Ordering, fs::read_to_string};
-
 fn main() {
     let data = process_input(read_data());
 
