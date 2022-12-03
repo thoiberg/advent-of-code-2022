@@ -8,13 +8,17 @@ fn main() {
     println!("Part One Solution is: {}", part_one_answer);
 }
 
+fn part_one_solution(rounds: &Vec<FirstRound>) -> u32 {
+    rounds.into_iter().fold(0, |acc, round| acc + round.play())
+}
+
 #[derive(Clone, Copy)]
-struct Round {
+struct FirstRound {
     player_hand: Hand,
     opponent_hand: Hand,
 }
 
-impl Round {
+impl FirstRound {
     pub fn new(player_hand: char, opponent_hand: char) -> Self {
         let player_move = match player_hand {
             'X' => Hand::Rock,
@@ -81,15 +85,11 @@ impl Ord for Hand {
     }
 }
 
-fn part_one_solution(rounds: &Vec<Round>) -> u32 {
-    rounds.into_iter().fold(0, |acc, round| acc + round.play())
-}
-
 fn read_data() -> &'static str {
     include_str!("../data/puzzle_data")
 }
 
-fn process_input(data: &str) -> Vec<Round> {
+fn process_input(data: &str) -> Vec<FirstRound> {
     data.split("\n")
         .into_iter()
         .map(|round| {
@@ -98,7 +98,7 @@ fn process_input(data: &str) -> Vec<Round> {
             let boop: Vec<char> = moves[0].chars().collect();
             let troop: Vec<char> = moves[1].chars().collect();
 
-            Round::new(troop[0], boop[0])
+            FirstRound::new(troop[0], boop[0])
         })
         .collect()
 }
@@ -107,7 +107,7 @@ fn process_input(data: &str) -> Vec<Round> {
 mod test_super {
     use super::*;
 
-    fn test_data() -> Vec<Round> {
+    fn test_data() -> Vec<FirstRound> {
         process_input("A Y\nB X\nC Z")
     }
 
