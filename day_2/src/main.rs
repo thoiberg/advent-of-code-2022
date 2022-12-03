@@ -1,3 +1,5 @@
+use std::cmp::Ordering;
+
 fn main() {
     let data = process_input(read_data());
 
@@ -34,37 +36,49 @@ impl Round {
     }
 
     pub fn play(self: Self) -> u32 {
-        match self.player_hand {
-            Hand::Rock => {
-                1 + match self.opponent_hand {
-                    Hand::Rock => 3,
-                    Hand::Scissors => 6,
-                    Hand::Paper => 0,
-                }
-            }
-            Hand::Paper => {
-                2 + match self.opponent_hand {
-                    Hand::Rock => 6,
-                    Hand::Scissors => 0,
-                    Hand::Paper => 3,
-                }
-            }
-            Hand::Scissors => {
-                3 + match self.opponent_hand {
-                    Hand::Rock => 0,
-                    Hand::Scissors => 3,
-                    Hand::Paper => 6,
-                }
-            }
-        }
+        let outcome_points = match self.player_hand.cmp(&self.opponent_hand) {
+            Ordering::Less => 0,
+            Ordering::Equal => 3,
+            Ordering::Greater => 6,
+        };
+
+        let type_points = match self.player_hand {
+            Hand::Rock => 1,
+            Hand::Paper => 2,
+            Hand::Scissors => 3,
+        };
+
+        outcome_points + type_points
     }
 }
 
-#[derive(PartialEq, Eq, PartialOrd, Ord, Clone, Copy)]
+#[derive(PartialEq, Eq, PartialOrd, Clone, Copy)]
 enum Hand {
     Rock = 1,
     Paper = 2,
     Scissors = 3,
+}
+
+impl Ord for Hand {
+    fn cmp(&self, other: &Self) -> Ordering {
+        match self {
+            Hand::Rock => match other {
+                Hand::Rock => Ordering::Equal,
+                Hand::Scissors => Ordering::Greater,
+                Hand::Paper => Ordering::Less,
+            },
+            Hand::Paper => match other {
+                Hand::Rock => Ordering::Greater,
+                Hand::Scissors => Ordering::Less,
+                Hand::Paper => Ordering::Equal,
+            },
+            Hand::Scissors => match other {
+                Hand::Rock => Ordering::Less,
+                Hand::Scissors => Ordering::Equal,
+                Hand::Paper => Ordering::Greater,
+            },
+        }
+    }
 }
 
 fn part_one_solution(rounds: &Vec<Round>) -> u32 {
