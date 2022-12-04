@@ -33,22 +33,14 @@ impl Rucksack {
     }
 
     fn value_for(&self, char: &char) -> u32 {
-        let lower_case = ('a'..='z').collect::<Vec<char>>();
-        let upper_case = ('A'..='Z').collect::<Vec<char>>();
+        let mut all_characters: Vec<char> = vec![];
+        all_characters.append(&mut ('a'..='z').collect::<Vec<char>>());
+        all_characters.append(&mut ('A'..='Z').collect::<Vec<char>>());
 
-        match lower_case.iter().position(|&x| &x == char) {
-            Some(idx) => {
-                // get the index (+ 1) and return
-                (idx + 1).try_into().unwrap()
-            }
+        match all_characters.iter().position(|&x| &x == char) {
+            Some(idx) => (idx + 1).try_into().unwrap(),
             None => {
-                // get the position from the upper_case range, and plus +27
-                match upper_case.iter().position(|&x| &x == char) {
-                    Some(idx) => (idx + 27).try_into().unwrap(),
-                    None => panic!(
-                        "Didn't find the character in either set, this shouldn't have happened..."
-                    ),
-                }
+                panic!("Didn't find the character in either set, this shouldn't have happened...")
             }
         }
     }
