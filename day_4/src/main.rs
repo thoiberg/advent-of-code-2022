@@ -1,7 +1,7 @@
 use std::collections::HashSet;
 
 fn main() {
-    let data = process_data(&read_data());
+    let data = process_data(read_data());
 
     let part_one_answer = part_one_solution(&data);
     println!("Part One Solution is: {}", part_one_answer);
@@ -10,12 +10,12 @@ fn main() {
     println!("Part Two Solution is: {}", part_two_answer);
 }
 
-fn part_one_solution(elf_pairs: &Vec<Vec<HashSet<u32>>>) -> u32 {
-    elf_pairs.into_iter().fold(0, |acc, elf_pair| {
+fn part_one_solution(elf_pairs: &[Vec<HashSet<u32>>]) -> u32 {
+    elf_pairs.iter().fold(0, |acc, elf_pair| {
         let left_side = &elf_pair[0];
         let right_side = &elf_pair[1];
 
-        if left_side.is_subset(&right_side) || left_side.is_superset(&right_side) {
+        if left_side.is_subset(right_side) || left_side.is_superset(right_side) {
             acc + 1
         } else {
             acc
@@ -23,14 +23,14 @@ fn part_one_solution(elf_pairs: &Vec<Vec<HashSet<u32>>>) -> u32 {
     })
 }
 
-fn part_two_solution(elf_pairs: &Vec<Vec<HashSet<u32>>>) -> u32 {
-    elf_pairs.into_iter().fold(0, |acc, elf_pair| {
+fn part_two_solution(elf_pairs: &[Vec<HashSet<u32>>]) -> u32 {
+    elf_pairs.iter().fold(0, |acc, elf_pair| {
         let left_side = &elf_pair[0];
         let right_side = &elf_pair[1];
 
         let overlapping_assignments: HashSet<&u32> = left_side.intersection(right_side).collect();
 
-        if overlapping_assignments.len() >= 1 {
+        if !overlapping_assignments.is_empty() {
             acc + 1
         } else {
             acc
@@ -39,15 +39,15 @@ fn part_two_solution(elf_pairs: &Vec<Vec<HashSet<u32>>>) -> u32 {
 }
 
 fn process_data(data: &str) -> Vec<Vec<HashSet<u32>>> {
-    data.split("\n")
+    data.split('\n')
         .into_iter()
         .map(|elf_pair| {
             elf_pair
-                .split(",")
+                .split(',')
                 .into_iter()
                 .map(|assignment| {
                     let range_bookends: Vec<u32> = assignment
-                        .split("-")
+                        .split('-')
                         .into_iter()
                         .map(|range_bookend| range_bookend.parse::<u32>().unwrap())
                         .collect();
