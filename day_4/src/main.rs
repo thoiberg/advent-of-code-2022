@@ -62,4 +62,12 @@ mod test_super {
 
         assert_eq!(answer, 2);
     }
+
+    #[test]
+    fn test_part_one_solution() {
+        let data = process_data(include_str!("../data/puzzle_data"));
+        let answer = part_one_solution(&data);
+
+        assert_eq!(answer, 602);
+    }
 }
