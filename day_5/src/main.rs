@@ -4,23 +4,22 @@ use std::{
 };
 
 fn main() {
-    let data = process_data(read_data());
+    let mut data = process_data(read_data());
 
-    let answer = part_one_solution(data.0, data.1);
+    let answer = part_one_solution(&mut data.0, &mut data.1);
     println!("The Answer to Part One is: {}", answer);
 }
 
-fn part_one_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
+fn part_one_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
     for box_move in moves {
         let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
-        // pop values from the stack
+
         let mut boxes_to_move = stack_to_move_from
             .boxes
             .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
-        // reverse the slice
+
         boxes_to_move.reverse();
 
-        // add to the stack
         let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
         stack_to_move_to.boxes.append(&mut boxes_to_move);
     }
@@ -66,7 +65,7 @@ fn build_stacks(stacks: &str) -> Vec<Stack> {
     for line in deque_stack {
         let line_chars: Vec<char> = line.chars().collect();
 
-        &char_indices.iter_mut().for_each(|(indx, boxes)| {
+        char_indices.iter_mut().for_each(|(indx, boxes)| {
             let box_value = line_chars.get(*indx);
             if let Some(value) = box_value {
                 if value.is_alphabetic() {
@@ -108,7 +107,7 @@ impl FromStr for Move {
     type Err = color_eyre::Report;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let mut words = s.split(" ");
+        let mut words = s.split(' ');
 
         let (Some("move"), Some(amount), Some("from"), Some(from_stack), Some("to"), Some(to_stack), None) = (words.next(), words.next(),words.next(),words.next(), words.next(), words.next(), words.next()) else {
             return Err(color_eyre::eyre::eyre!("expected move <from_stack> to <to_stack> EOF, got {s:?}"));
@@ -133,16 +132,16 @@ mod test_super {
 
     #[test]
     fn test_part_one_example() {
-        let data = process_data(&test_data());
-        let answer = part_one_solution(data.0, data.1);
+        let mut data = process_data(&test_data());
+        let answer = part_one_solution(&mut data.0, &mut data.1);
 
         assert_eq!(answer, "CMZ");
     }
 
     #[test]
     fn test_part_one_solution() {
-        let data = process_data(&read_data());
-        let answer = part_one_solution(data.0, data.1);
+        let mut data = process_data(&read_data());
+        let answer = part_one_solution(&mut data.0, &mut data.1);
 
         assert_eq!(answer, "QGTHFZBHV");
     }
