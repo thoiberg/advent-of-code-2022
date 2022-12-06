@@ -12,14 +12,14 @@ fn main() {
 }
 
 fn part_one_solution(signal: &str) -> Option<usize> {
-    unique_characters(signal, 4)
+    unique_subset(signal, 4)
 }
 
 fn part_two_solution(signal: &str) -> Option<usize> {
-    unique_characters(signal, 14)
+    unique_subset(signal, 14)
 }
 
-fn unique_characters(signal: &str, length: usize) -> Option<usize> {
+fn unique_subset(signal: &str, length: usize) -> Option<usize> {
     let datastream: Vec<char> = signal.chars().collect();
     let datastream_also: Vec<char> = signal.chars().collect();
 
