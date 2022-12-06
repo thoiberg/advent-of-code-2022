@@ -4,18 +4,16 @@ use std::{
 };
 
 fn main() {
-    let mut data = process_data(read_data());
+    let data = process_data(read_data());
 
-    let part_one_answer = part_one_solution(&mut data.0, &mut data.1);
+    let part_one_answer = part_one_solution(data.0.clone(), data.1.clone());
     println!("The Answer to Part One is: {}", part_one_answer);
 
-    // TODO: try and use the same data source for both parts
-    let mut part_two_data = process_data(read_data());
-    let part_two_answer = part_two_solution(&mut part_two_data.0, &mut part_two_data.1);
+    let part_two_answer = part_two_solution(data.0.clone(), data.1.clone());
     println!("The Answer to Part Two is: {}", part_two_answer);
 }
 
-fn part_one_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
+fn part_one_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
     for box_move in moves {
         let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
 
@@ -37,15 +35,15 @@ fn part_one_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
     top_boxes.join("")
 }
 
-fn part_two_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
+fn part_two_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
     for box_move in moves {
-        let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
+        let stack_to_move_from = &mut stacks[(box_move.from - 1)];
 
         let mut boxes_to_move = stack_to_move_from
             .boxes
-            .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
+            .split_off(stack_to_move_from.boxes.len() - (box_move.amount));
 
-        let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
+        let stack_to_move_to = &mut stacks[(box_move.to - 1)];
         stack_to_move_to.boxes.append(&mut boxes_to_move);
     }
 
@@ -62,7 +60,6 @@ fn read_data() -> &'static str {
 }
 
 fn process_data(data: &str) -> (Vec<Stack>, Vec<Move>) {
-    // TODO: collect into tuple
     let stuff: Vec<&str> = data.split("\n\n").collect();
 
     let stacks = build_stacks(stuff[0]);
@@ -72,22 +69,17 @@ fn process_data(data: &str) -> (Vec<Stack>, Vec<Move>) {
 }
 
 fn build_stacks(stacks: &str) -> Vec<Stack> {
-    let mut stack: Vec<&str> = stacks.lines().collect();
-
-    stack.reverse();
-
-    let mut deque_stack: VecDeque<&str> = stack.into_iter().collect();
+    let mut stack: VecDeque<_> = stacks.lines().collect();
     let mut char_indices: BTreeMap<usize, Vec<char>> = BTreeMap::new();
 
-    for (idx, character) in deque_stack[0].chars().enumerate() {
+    let stack_names = stack.pop_back().unwrap();
+    for (idx, character) in stack_names.chars().enumerate() {
         if character.is_numeric() {
             char_indices.insert(idx, Vec::new());
         }
     }
 
-    deque_stack.pop_front();
-
-    for line in deque_stack {
+    stack.into_iter().rev().for_each(|line| {
         let line_chars: Vec<char> = line.chars().collect();
 
         char_indices.iter_mut().for_each(|(indx, boxes)| {
@@ -98,7 +90,7 @@ fn build_stacks(stacks: &str) -> Vec<Stack> {
                 }
             }
         });
-    }
+    });
 
     char_indices
         .into_values()
@@ -110,22 +102,19 @@ fn build_moves(moves: &str) -> Vec<Move> {
     moves
         .lines()
         .into_iter()
-        .map(|move_line| {
-            // TODO: don't just unwrap, handle better
-            Move::from_str(move_line).unwrap()
-        })
+        .map(|move_line| Move::from_str(move_line).unwrap())
         .collect()
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone)]
 struct Stack {
     boxes: Vec<char>,
 }
-#[derive(Debug)]
+#[derive(Debug, Clone, Copy)]
 struct Move {
-    amount: u32,
-    from: u32,
-    to: u32,
+    amount: usize,
+    from: usize,
+    to: usize,
 }
 
 impl FromStr for Move {
@@ -140,9 +129,9 @@ impl FromStr for Move {
 
         Ok(Move {
             // TODO: See if I can combine the parsing with the let statement
-            from: from_stack.parse::<u32>().unwrap(),
-            to: to_stack.parse::<u32>().unwrap(),
-            amount: amount.parse::<u32>().unwrap(),
+            from: from_stack.parse::<usize>().unwrap(),
+            to: to_stack.parse::<usize>().unwrap(),
+            amount: amount.parse::<usize>().unwrap(),
         })
     }
 }
@@ -157,32 +146,32 @@ mod test_super {
 
     #[test]
     fn test_part_one_example() {
-        let mut data = process_data(&test_data());
-        let answer = part_one_solution(&mut data.0, &mut data.1);
+        let data = process_data(&test_data());
+        let answer = part_one_solution(data.0, data.1);
 
         assert_eq!(answer, "CMZ");
     }
 
     #[test]
     fn test_part_one_solution() {
-        let mut data = process_data(&read_data());
-        let answer = part_one_solution(&mut data.0, &mut data.1);
+        let data = process_data(&read_data());
+        let answer = part_one_solution(data.0, data.1);
 
         assert_eq!(answer, "QGTHFZBHV");
     }
 
     #[test]
     fn test_part_two_example() {
-        let mut data = process_data(&test_data());
-        let answer = part_two_solution(&mut data.0, &mut data.1);
+        let data = process_data(&test_data());
+        let answer = part_two_solution(data.0, data.1);
 
         assert_eq!(answer, "MCD");
     }
 
     #[test]
     fn test_part_two_solution() {
-        let mut data = process_data(&read_data());
-        let answer = part_two_solution(&mut data.0, &mut data.1);
+        let data = process_data(&read_data());
+        let answer = part_two_solution(data.0, data.1);
 
         assert_eq!(answer, "MGDMPSZTM");
     }
