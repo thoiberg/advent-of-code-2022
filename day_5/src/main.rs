@@ -6,8 +6,13 @@ use std::{
 fn main() {
     let mut data = process_data(read_data());
 
-    let answer = part_one_solution(&mut data.0, &mut data.1);
-    println!("The Answer to Part One is: {}", answer);
+    let part_one_answer = part_one_solution(&mut data.0, &mut data.1);
+    println!("The Answer to Part One is: {}", part_one_answer);
+
+    // TODO: try and use the same data source for both parts
+    let mut part_two_data = process_data(read_data());
+    let part_two_answer = part_two_solution(&mut part_two_data.0, &mut part_two_data.1);
+    println!("The Answer to Part Two is: {}", part_two_answer);
 }
 
 fn part_one_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
@@ -19,6 +24,26 @@ fn part_one_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
             .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
 
         boxes_to_move.reverse();
+
+        let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
+        stack_to_move_to.boxes.append(&mut boxes_to_move);
+    }
+
+    let top_boxes: Vec<String> = stacks
+        .iter()
+        .map(|stack| String::from(stack.boxes.last().unwrap().to_owned()))
+        .collect();
+
+    top_boxes.join("")
+}
+
+fn part_two_solution(stacks: &mut [Stack], moves: &mut [Move]) -> String {
+    for box_move in moves {
+        let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
+
+        let mut boxes_to_move = stack_to_move_from
+            .boxes
+            .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
 
         let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
         stack_to_move_to.boxes.append(&mut boxes_to_move);
@@ -144,5 +169,21 @@ mod test_super {
         let answer = part_one_solution(&mut data.0, &mut data.1);
 
         assert_eq!(answer, "QGTHFZBHV");
+    }
+
+    #[test]
+    fn test_part_two_example() {
+        let mut data = process_data(&test_data());
+        let answer = part_two_solution(&mut data.0, &mut data.1);
+
+        assert_eq!(answer, "MCD");
+    }
+
+    #[test]
+    fn test_part_two_solution() {
+        let mut data = process_data(&read_data());
+        let answer = part_two_solution(&mut data.0, &mut data.1);
+
+        assert_eq!(answer, "MGDMPSZTM");
     }
 }
