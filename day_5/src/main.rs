@@ -41,12 +41,10 @@ fn move_boxes(
         stack_to_move_to.boxes.append(&mut boxes_to_append);
     }
 
-    let top_boxes: Vec<String> = stacks
+    stacks
         .iter()
         .map(|stack| String::from(stack.boxes.last().unwrap().to_owned()))
-        .collect();
-
-    top_boxes.join("")
+        .fold(String::new(), |acc, top_box| format!("{}{}", acc, top_box))
 }
 
 fn read_data() -> &'static str {
@@ -76,8 +74,8 @@ fn build_stacks(stacks: &str) -> Vec<Stack> {
     stack.into_iter().rev().for_each(|line| {
         let line_chars: Vec<char> = line.chars().collect();
 
-        char_indices.iter_mut().for_each(|(indx, boxes)| {
-            let box_value = line_chars.get(*indx);
+        char_indices.iter_mut().for_each(|(idx, boxes)| {
+            let box_value = line_chars.get(*idx);
             if let Some(value) = box_value {
                 if value.is_alphabetic() {
                     boxes.push(*value);
@@ -122,7 +120,6 @@ impl FromStr for Move {
         };
 
         Ok(Move {
-            // TODO: See if I can combine the parsing with the let statement
             from: from_stack.parse::<usize>().unwrap(),
             to: to_stack.parse::<usize>().unwrap(),
             amount: amount.parse::<usize>().unwrap(),
