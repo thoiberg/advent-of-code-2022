@@ -4,11 +4,22 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ['day_4', 'day_5'] }
+      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5'] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
       - run: cargo build
+        working-directory: ${{ matrix.dir }}
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5'] }
+    steps:
+      - uses: actions/checkout@v3
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+      - run: cargo test
         working-directory: ${{ matrix.dir }}
