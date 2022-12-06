@@ -6,12 +6,31 @@ use std::{
 fn main() {
     let data = process_data(read_data());
 
-    // let answer = part_one_solution(data.0, data.1);
-    // println!("The Answer to Part One is: {}", answer);
+    let answer = part_one_solution(data.0, data.1);
+    println!("The Answer to Part One is: {}", answer);
 }
 
-fn part_one_solution(stacks: Vec<Stack>, moves: Vec<Move>) -> u32 {
-    unimplemented!()
+fn part_one_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
+    for box_move in moves {
+        let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
+        // pop values from the stack
+        let mut boxes_to_move = stack_to_move_from
+            .boxes
+            .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
+        // reverse the slice
+        boxes_to_move.reverse();
+
+        // add to the stack
+        let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
+        stack_to_move_to.boxes.append(&mut boxes_to_move);
+    }
+
+    let top_boxes: Vec<String> = stacks
+        .iter()
+        .map(|stack| String::from(stack.boxes.last().unwrap().to_owned()))
+        .collect();
+
+    top_boxes.join("")
 }
 
 fn read_data() -> &'static str {
@@ -21,7 +40,15 @@ fn read_data() -> &'static str {
 fn process_data(data: &str) -> (Vec<Stack>, Vec<Move>) {
     // TODO: collect into tuple
     let stuff: Vec<&str> = data.split("\n\n").collect();
-    let mut stack: Vec<&str> = stuff[0].lines().collect();
+
+    let stacks = build_stacks(stuff[0]);
+    let moves = build_moves(stuff[1]);
+
+    (stacks, moves)
+}
+
+fn build_stacks(stacks: &str) -> Vec<Stack> {
+    let mut stack: Vec<&str> = stacks.lines().collect();
 
     stack.reverse();
 
@@ -49,21 +76,21 @@ fn process_data(data: &str) -> (Vec<Stack>, Vec<Move>) {
         });
     }
 
-    let stacks: Vec<Stack> = char_indices
+    char_indices
         .into_values()
         .map(|boxes| Stack { boxes })
-        .collect();
+        .collect()
+}
 
-    let moves: Vec<Move> = stuff[1]
+fn build_moves(moves: &str) -> Vec<Move> {
+    moves
         .lines()
         .into_iter()
         .map(|move_line| {
             // TODO: don't just unwrap, handle better
             Move::from_str(move_line).unwrap()
         })
-        .collect();
-
-    (stacks, moves)
+        .collect()
 }
 
 #[derive(Debug)]
@@ -100,8 +127,23 @@ impl FromStr for Move {
 mod test_super {
     use super::*;
 
+    fn test_data() -> &'static str {
+        include_str!("../data/example_data")
+    }
+
     #[test]
     fn test_part_one_example() {
-        assert_eq!(1, 2);
+        let data = process_data(&test_data());
+        let answer = part_one_solution(data.0, data.1);
+
+        assert_eq!(answer, "CMZ");
+    }
+
+    #[test]
+    fn test_part_one_solution() {
+        let data = process_data(&read_data());
+        let answer = part_one_solution(data.0, data.1);
+
+        assert_eq!(answer, "QGTHFZBHV");
     }
 }
