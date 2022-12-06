@@ -1,13 +1,14 @@
 name: "Build crates"
 on: [push]
-
 jobs:
   build:
     runs-on: ubuntu-latest
+    strategy:
+      matrix: { dir: ['day_4', 'day_5'] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
         with:
           toolchain: stable
       - run: cargo build
-        working-directory: day_5
+        working-directory: ${{ matrix.dir }}
