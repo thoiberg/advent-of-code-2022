@@ -13,38 +13,32 @@ fn main() {
     println!("The Answer to Part Two is: {}", part_two_answer);
 }
 
-fn part_one_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
+fn part_one_solution(stacks: Vec<Stack>, moves: Vec<Move>) -> String {
+    move_boxes(stacks, moves, |boxes_to_move| {
+        boxes_to_move.into_iter().rev().collect()
+    })
+}
+
+fn part_two_solution(stacks: Vec<Stack>, moves: Vec<Move>) -> String {
+    move_boxes(stacks, moves, |boxes_to_move| boxes_to_move)
+}
+
+fn move_boxes(
+    mut stacks: Vec<Stack>,
+    moves: Vec<Move>,
+    boxes_fn: fn(A: Vec<char>) -> Vec<char>,
+) -> String {
     for box_move in moves {
         let stack_to_move_from = &mut stacks[(box_move.from - 1) as usize];
 
-        let mut boxes_to_move = stack_to_move_from
+        let boxes_to_move = stack_to_move_from
             .boxes
             .split_off(stack_to_move_from.boxes.len() - (box_move.amount as usize));
 
-        boxes_to_move.reverse();
+        let mut boxes_to_append = boxes_fn(boxes_to_move);
 
         let stack_to_move_to = &mut stacks[(box_move.to - 1) as usize];
-        stack_to_move_to.boxes.append(&mut boxes_to_move);
-    }
-
-    let top_boxes: Vec<String> = stacks
-        .iter()
-        .map(|stack| String::from(stack.boxes.last().unwrap().to_owned()))
-        .collect();
-
-    top_boxes.join("")
-}
-
-fn part_two_solution(mut stacks: Vec<Stack>, moves: Vec<Move>) -> String {
-    for box_move in moves {
-        let stack_to_move_from = &mut stacks[(box_move.from - 1)];
-
-        let mut boxes_to_move = stack_to_move_from
-            .boxes
-            .split_off(stack_to_move_from.boxes.len() - (box_move.amount));
-
-        let stack_to_move_to = &mut stacks[(box_move.to - 1)];
-        stack_to_move_to.boxes.append(&mut boxes_to_move);
+        stack_to_move_to.boxes.append(&mut boxes_to_append);
     }
 
     let top_boxes: Vec<String> = stacks
