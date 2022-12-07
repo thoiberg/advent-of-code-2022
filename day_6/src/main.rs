@@ -20,24 +20,12 @@ fn part_two_solution(signal: &str) -> Option<usize> {
 }
 
 fn unique_subset(signal: &str, length: usize) -> Option<usize> {
-    let datastream: Vec<char> = signal.chars().collect();
-    let datastream_also: Vec<char> = signal.chars().collect();
-
-    datastream.iter().enumerate().find_map(|(idx, _)| {
-        let mut uniques = HashSet::new();
-
-        // TODO: handle case where there is no match for the length.
-        // Currently it will panic if I try to access an out of bounds index
-        for boop in &datastream_also[idx..=(idx + length - 1)] {
-            uniques.insert(*boop);
-        }
-
-        if uniques.len() == length {
-            Some(idx + length)
-        } else {
-            None
-        }
-    })
+    // taken from https://fasterthanli.me/series/advent-of-code-2022/part-6
+    signal
+        .as_bytes()
+        .windows(length)
+        .position(|window| window.iter().collect::<HashSet<_>>().len() == length)
+        .map(|pos| pos + length)
 }
 
 fn read_data() -> &'static str {
