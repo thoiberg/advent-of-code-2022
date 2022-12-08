@@ -3,11 +3,11 @@ use ndarray::{s, Array2};
 fn main() {
     let trees = process_data(read_data());
 
-    let part_one_solution = part_one_solution(trees);
+    let part_one_solution = part_one_solution(&trees);
     println!("Part One Answer is: {}", part_one_solution);
 }
 
-fn part_one_solution(trees: Array2<u32>) -> u32 {
+fn part_one_solution(trees: &Array2<u32>) -> u32 {
     trees.indexed_iter().fold(0, |acc, ((row, col), tree)| {
         let above_visibility = trees.slice(s![0..row, col]).iter().all(|x| x < tree);
         let below_visibility = trees.slice(s![row + 1.., col]).iter().all(|x| x < tree);
@@ -57,7 +57,7 @@ mod test_super {
     fn test_part_one_example() {
         let data = process_data(include_str!("../data/example_data"));
 
-        let answer = part_one_solution(data);
+        let answer = part_one_solution(&data);
 
         assert_eq!(answer, 21);
     }
@@ -66,7 +66,7 @@ mod test_super {
     fn test_part_one_solution() {
         let data = process_data(read_data());
 
-        let answer = part_one_solution(data);
+        let answer = part_one_solution(&data);
 
         assert_eq!(answer, 1789);
     }
