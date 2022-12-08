@@ -26,9 +26,9 @@ fn part_one_solution(trees: &Array2<u32>) -> u32 {
         .into_iter()
         .any(|x| x)
         {
-            return acc + 1;
+            acc + 1
         } else {
-            return acc;
+            acc
         }
     })
 }
