@@ -11,13 +11,11 @@ fn part_one_solution(trees: Array2<u32>) -> u32 {
     let row_length = trees.len_of(Axis(0));
     let col_length = trees.len_of(Axis(1));
 
-    let mut visible_trees = 0;
-
-    trees.indexed_iter().for_each(|((row, col), tree)| {
+    trees.indexed_iter().fold(0, |acc, ((row, col), tree)| {
         if row == 0 || col == 0 {
-            visible_trees += 1;
+            return acc + 1;
         } else if (row == row_length - 1) || (col == col_length - 1) {
-            visible_trees += 1;
+            return acc + 1;
         } else {
             let above = trees.slice(s![0..row, col]);
             let below = trees.slice(s![row + 1.., col]);
@@ -30,12 +28,12 @@ fn part_one_solution(trees: Array2<u32>) -> u32 {
             let right_visibility = right.iter().all(|x| x < tree);
 
             if above_visibility || below_visibility || left_visibility || right_visibility {
-                visible_trees += 1;
+                return acc + 1;
+            } else {
+                return acc;
             }
         }
-    });
-
-    visible_trees
+    })
 }
 
 fn read_data() -> &'static str {
