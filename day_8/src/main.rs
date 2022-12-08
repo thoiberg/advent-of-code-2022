@@ -1,4 +1,4 @@
-use ndarray::{s, Array2, Axis};
+use ndarray::{s, Array2};
 
 fn main() {
     let trees = process_data(read_data());
@@ -8,30 +8,24 @@ fn main() {
 }
 
 fn part_one_solution(trees: Array2<u32>) -> u32 {
-    let row_length = trees.len_of(Axis(0));
-    let col_length = trees.len_of(Axis(1));
-
     trees.indexed_iter().fold(0, |acc, ((row, col), tree)| {
-        if row == 0 || col == 0 {
-            return acc + 1;
-        } else if (row == row_length - 1) || (col == col_length - 1) {
+        let above_visibility = trees.slice(s![0..row, col]).iter().all(|x| x < tree);
+        let below_visibility = trees.slice(s![row + 1.., col]).iter().all(|x| x < tree);
+        let left_visibility = trees.slice(s![row, 0..col]).iter().all(|x| x < tree);
+        let right_visibility = trees.slice(s![row, col + 1..]).iter().all(|x| x < tree);
+
+        if [
+            above_visibility,
+            below_visibility,
+            left_visibility,
+            right_visibility,
+        ]
+        .into_iter()
+        .any(|x| x)
+        {
             return acc + 1;
         } else {
-            let above = trees.slice(s![0..row, col]);
-            let below = trees.slice(s![row + 1.., col]);
-            let left = trees.slice(s![row, 0..col]);
-            let right = trees.slice(s![row, col + 1..]);
-
-            let above_visibility = above.iter().all(|x| x < tree);
-            let below_visibility = below.iter().all(|x| x < tree);
-            let left_visibility = left.iter().all(|x| x < tree);
-            let right_visibility = right.iter().all(|x| x < tree);
-
-            if above_visibility || below_visibility || left_visibility || right_visibility {
-                return acc + 1;
-            } else {
-                return acc;
-            }
+            return acc;
         }
     })
 }
