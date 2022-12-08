@@ -69,4 +69,13 @@ mod test_super {
 
         assert_eq!(answer, 21);
     }
+
+    #[test]
+    fn test_part_one_solution() {
+        let data = process_data(read_data());
+
+        let answer = part_one_solution(data);
+
+        assert_eq!(answer, 1789);
+    }
 }
