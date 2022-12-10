@@ -104,7 +104,7 @@ struct Move {
     amount: i32,
 }
 
-#[derive(Default, Eq, Hash, PartialEq, Clone, Copy, Debug, Ord, PartialOrd)]
+#[derive(Default, Eq, PartialEq, Copy, Clone, Debug, Ord, PartialOrd)]
 struct Coordinate {
     x: i32,
     y: i32,
