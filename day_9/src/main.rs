@@ -15,7 +15,7 @@ fn part_one_solution(moves: &Vec<Move>) -> Option<usize> {
     let mut tail = Marker::default();
 
     let mut tail_locations: BTreeSet<Coordinate> = BTreeSet::new();
-    tail_locations.insert(tail.current_position.clone());
+    tail_locations.insert(tail.current_position);
 
     for head_move in moves {
         for _ in 1..=head_move.amount {
@@ -28,7 +28,7 @@ fn part_one_solution(moves: &Vec<Move>) -> Option<usize> {
             if horizontal_diff > 1 || vertical_diff > 1 {
                 tail.current_position = prev_coordinate;
 
-                tail_locations.insert(tail.current_position.clone());
+                tail_locations.insert(tail.current_position);
             }
         }
     }
@@ -43,7 +43,7 @@ fn part_two_solution(moves: &Vec<Move>) -> Option<usize> {
 
     for head_move in moves {
         for _ in 1..=head_move.amount {
-            let mut prev_marker = markers[0].clone();
+            let mut prev_marker = markers[0];
 
             for (idx, marker) in markers.iter_mut().enumerate() {
                 if idx == 0 {
@@ -71,12 +71,12 @@ fn part_two_solution(moves: &Vec<Move>) -> Option<usize> {
                         };
 
                         if idx == 9 {
-                            tail_locations.insert(marker.current_position.clone());
+                            tail_locations.insert(marker.current_position);
                         }
                     }
                 }
 
-                prev_marker = marker.clone();
+                prev_marker = *marker;
             }
         }
     }
