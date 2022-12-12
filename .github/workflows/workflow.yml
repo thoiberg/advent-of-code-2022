@@ -4,7 +4,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5', 'day_6', 'day_8'] }
+      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5', 'day_6', 'day_8', 'day_9'] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
@@ -15,7 +15,7 @@ jobs:
   test:
     runs-on: ubuntu-latest
     strategy:
-      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5', 'day_6', 'day_8'] }
+      matrix: { dir: ['day_1', 'day_2', 'day_3', 'day_4', 'day_5', 'day_6', 'day_8', 'day_9'] }
     steps:
       - uses: actions/checkout@v3
       - uses: actions-rs/toolchain@v1
