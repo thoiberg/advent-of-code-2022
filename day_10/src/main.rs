@@ -1,47 +1,47 @@
 use nom::branch::alt;
-use nom::bytes::complete::{tag, take, take_while1};
+use nom::bytes::complete::{tag, take_while1};
 use nom::combinator::{all_consuming, map};
 use nom::sequence::preceded;
 use nom::{Finish, IResult};
 
 fn main() {
-    let example_data = "noop\naddx 3\naddx -5";
-    let data = process_data(example_data);
+    let data = process_data(read_data());
 
-    // for datum in data {
-    //     println!("{:?}", datum);
-    // }
-
-    part_one_solution(&data);
+    let part_one_answer = part_one_solution(&data);
+    println!("The solution for Part One is: {}", part_one_answer);
 }
 
-fn part_one_solution(commands: &Vec<Command>) -> u32 {
+fn part_one_solution(commands: &Vec<Command>) -> i32 {
     let mut value = 1;
     let mut cycle_count = 0;
+    let mut signals: Vec<i32> = vec![];
 
     for command in commands {
-        println!("running!");
-        println!("command: {:?}", &command);
+        let cycle_step: i32;
+        let mut value_increase = 0;
+
         match command {
             Command::Noop(_) => {
-                cycle_count += 1;
+                cycle_step = 1;
             }
             Command::Add(add) => {
-                println!("value: {}", add.value);
-                cycle_count += 2;
-                value += add.value
+                cycle_step = 2;
+                value_increase = add.value;
             }
         }
+
+        for cycle_step in cycle_count + 1..=cycle_count + cycle_step {
+            if [20, 60, 100, 140, 180, 220].contains(&cycle_step) {
+                signals.push(cycle_step * value);
+            }
+
+            cycle_count += 1;
+        }
+
+        value += value_increase
     }
 
-    println!("cycle count: {}", cycle_count);
-    println!("value: {}", value);
-    cycle_count
-    // iterate through
-    //  if noop, increase clock count and
-    // naive: check the command two before and execute on the mut value
-
-    // unimplemented!()
+    signals.into_iter().sum()
 }
 
 fn process_data(data: &str) -> Vec<Command> {
@@ -64,7 +64,7 @@ fn process_noop(line: &str) -> IResult<&str, Noop> {
 fn process_num(line: &str) -> IResult<&str, i32> {
     map(
         take_while1(|c: char| "-1234567890".contains(c)),
-        (|x: &str| x.parse::<i32>().unwrap()),
+        |x: &str| x.parse::<i32>().unwrap(),
     )(line)
 }
 
@@ -89,4 +89,25 @@ struct Noop;
 enum Command {
     Add(Add),
     Noop(Noop),
+}
+
+#[cfg(test)]
+mod test_super {
+    use super::*;
+
+    #[test]
+    fn test_part_one_example() {
+        let data = process_data(include_str!("../data/example_data"));
+        let answer = part_one_solution(&data);
+
+        assert_eq!(answer, 13140);
+    }
+
+    #[test]
+    fn test_part_one_solution() {
+        let data = process_data(read_data());
+        let answer = part_one_solution(&data);
+
+        assert_eq!(answer, 14760);
+    }
 }
